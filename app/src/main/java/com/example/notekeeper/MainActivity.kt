@@ -5,7 +5,10 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
+import androidx.core.view.get
 import com.example.notekeeper.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +23,14 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        val dm  = DataManager()
+
+        val adapterCourses = ArrayAdapter<CourseInfo>(this, android.R.layout.simple_spinner_item, dm.courses.values.toList())
+
+        adapterCourses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        val spinnerCourses: Spinner = findViewById(R.id.spinnerCourses)
+        spinnerCourses.adapter = adapterCourses
 //        val textDisplayedValue = findViewById<TextView>(R.id.textDisplayedValue)
 
 //        val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -65,23 +76,3 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class Person (   ){
-    var firstName: String = ""
-    var lastName: String = ""
-    var age: Int = 0
-    var weightLBS = 0
-    var weightKG: Int
-        get() = (weightLBS / 2.2).toInt()
-        set(value) {
-            weightLBS = (value * 2.2).toInt()
-        }
-}
-
-fun main() {
-    val person = Person()
-    person.firstName = "Jim"
-    person.lastName = "Wilson"
-    person.age = 54
-    person.weightKG = 90
-    println("${person.firstName} ${person.lastName} is ${person.age} years old and weighs ${person.weightLBS}KG")
-}
