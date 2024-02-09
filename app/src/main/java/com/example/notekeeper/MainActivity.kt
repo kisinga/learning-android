@@ -1,19 +1,17 @@
 package com.example.notekeeper
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.TextView
-import androidx.core.view.get
 import com.example.notekeeper.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var notePosition = POSITION_NOT_SET
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,29 +21,47 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        val dm  = DataManager()
-
-        val adapterCourses = ArrayAdapter<CourseInfo>(this, android.R.layout.simple_spinner_item, dm.courses.values.toList())
+        val adapterCourses = ArrayAdapter(this, android.R.layout.simple_spinner_item,
+            DataManager.courses.values.toList())
 
         adapterCourses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        val spinnerCourses: Spinner = findViewById(R.id.spinnerCourses)
+        val spinnerCourses: Spinner =binding.contentMain.spinnerCourses
         spinnerCourses.adapter = adapterCourses
-//        val textDisplayedValue = findViewById<TextView>(R.id.textDisplayedValue)
 
-//        val navController = findNavController(R.id.nav_host_fragment_content_main)
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+        notePosition = savedInstanceState?.getInt(NOTE_POSITION, POSITION_NOT_SET) ?:
+            intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET)
 
-//        binding.fab.setOnClickListener { view ->
-//
-//            val originalValue = textDisplayedValue.text.toString().toInt()
-//            val newValue = originalValue*2
-//
-//            textDisplayedValue.text = newValue.toString()
-//            Snackbar.make(view, "Value $originalValue Changed to $newValue", Snackbar.LENGTH_LONG)
-//                .show()
-//        }
+        if (notePosition != POSITION_NOT_SET){
+            displayNote()
+        }else{
+            DataManager.notes.add(NoteInfo())
+            notePosition = DataManager.notes.lastIndex
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveNote()
+    }
+
+    private fun saveNote() {
+        val  note = DataManager.notes[notePosition]
+        note.title = binding.contentMain.textNoteTitle.text.toString()
+        note.text = binding.contentMain.textNoteText.text.toString()
+        note.course = binding.contentMain.spinnerCourses.selectedItem as CourseInfo
+    }
+
+    private fun displayNote() {
+        val note = DataManager.notes[notePosition]
+        val noteTitle = binding.contentMain.textNoteTitle
+        noteTitle.setText(note.title)
+
+        val noteText = binding.contentMain.textNoteText
+        noteText.setText(note.text)
+
+        val coursePosition = DataManager.courses.values.indexOf(note.course)
+        binding.contentMain.spinnerCourses.setSelection(coursePosition)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -55,14 +71,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-//        return when (item.itemId) {
-//            R.id.action_settings -> true
-//            else -> super.onOptionsItemSelected(item)
-//        }
-        return false
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            R.id.action_next -> {
+                moveNext()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun moveNext() {
+        ++notePosition
+        displayNote()
+        invalidateOptionsMenu()
+    }
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if(notePosition >= DataManager.notes.lastIndex){
+            val menuItem = menu?.findItem(R.id.action_next)
+            if (menuItem != null){
+                menuItem.icon = getDrawable(com.google.android.material.R.drawable.mtrl_ic_cancel)
+                menuItem.isEnabled = false
+            }
+        }
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(NOTE_POSITION,notePosition)
     }
 
     override fun onSupportNavigateUp(): Boolean {

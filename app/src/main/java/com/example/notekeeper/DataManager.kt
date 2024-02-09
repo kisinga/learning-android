@@ -1,13 +1,12 @@
 package com.example.notekeeper
 
-import android.icu.text.CaseMap.Title
-
-class DataManager {
+object DataManager {
     val courses = HashMap<String , CourseInfo>()
     val notes = ArrayList<NoteInfo>()
 
     init {
         initializeCourses()
+        initializeNotes()
     }
 
     private fun initializeCourses(){
@@ -23,5 +22,43 @@ class DataManager {
 
         course = CourseInfo("java_core", "Java fundamentals: the core language")
         courses.set(course.courseID, course)
+    }
+    private fun initializeNotes(){
+        var note = NoteInfo(courses.get("android_intents")!!, title = "Example", text = "Nothing much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_intents")!!, title = "Example 2", text = "Testing more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_async")!!, title = "Example 3", text = "This is so cool")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_async")!!, title = "Example 2", text = " Lorem ipsum dolor" +
+                " sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris\n volutpat, dolor " +
+                " id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus\n" )
+        notes.add(note)
+        note = NoteInfo(courses.get("android_async")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_intents")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("java_core")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("java_lang")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("java_core")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_async")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("java_lang")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("java_lang")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_intents")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_intents")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_intents")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_intents")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
+        note = NoteInfo(courses.get("android_intents")!!, title = "Example 2", text = "TEsting more much")
+        notes.add(note)
     }
 }

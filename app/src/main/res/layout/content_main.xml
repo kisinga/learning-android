@@ -22,7 +22,7 @@
 
     <Spinner
         android:id="@+id/spinnerCourses"
-        android:layout_width="349dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
